@@ -164,7 +164,7 @@
 **Objetivo:** Crear endpoints con Minimal APIs
 
 ### Tareas:
-- [ ] 5.1 Configurar Program.cs
+- [x] 5.1 Configurar Program.cs
   - Servicios de DI
   - Autenticación JWT
   - Swagger con autenticación
@@ -172,39 +172,39 @@
   - Rate Limiting
   - CORS
 
-- [ ] 5.2 Crear endpoints de Autenticación
+- [x] 5.2 Crear endpoints de Autenticación
   - POST /api/auth/register
   - POST /api/auth/login
   - POST /api/auth/refresh-token
 
-- [ ] 5.3 Crear endpoints de Películas (CRUD)
+- [x] 5.3 Crear endpoints de Películas (CRUD)
   - GET /api/movies (paginado) - [User, Editor, Admin]
   - GET /api/movies/{id} - [User, Editor, Admin]
   - POST /api/movies - [Admin]
   - PUT /api/movies/{id} - [Editor, Admin]
   - DELETE /api/movies/{id} - [Admin] (soft delete)
 
-- [ ] 5.4 Crear endpoints de Búsqueda
+- [x] 5.4 Crear endpoints de Búsqueda
   - GET /api/movies/search?title={title} - [User, Editor, Admin]
   - GET /api/movies/genre/{genre} - [User, Editor, Admin]
   - GET /api/movies/director/{director} - [User, Editor, Admin]
 
-- [ ] 5.5 Crear endpoints de Estadísticas
+- [x] 5.5 Crear endpoints de Estadísticas
   - GET /api/statistics/total-movies - [Admin]
   - GET /api/statistics/genres - [Admin]
   - GET /api/statistics/years-distribution - [Admin]
   - GET /api/statistics/top-directors - [Admin]
 
-- [ ] 5.6 Crear endpoints de Integración OMDb
-  - POST /api/integration/search-external - [Admin]
+- [x] 5.6 Crear endpoints de Integración OMDb
+  - GET /api/integration/search-external - [Admin]
   - POST /api/integration/import/{externalId} - [Admin]
-  - GET /api/integration/sync/{id} - [Admin]
+  - PUT /api/integration/sync/{id} - [Admin]
 
-- [ ] 5.7 Crear endpoints Adicionales
+- [x] 5.7 Crear endpoints Adicionales
   - GET /api/movies/random - [User, Editor, Admin]
   - GET /api/movies/recommendations/{genre} - [User, Editor, Admin]
 
-- [ ] 5.8 Configurar middleware
+- [x] 5.8 Configurar middleware
   - Exception handling global
   - Request/Response logging
 
@@ -284,7 +284,7 @@
 | Fase 2 | ✅ Completada | Capa Domain |
 | Fase 3 | ✅ Completada | Capa Application |
 | Fase 4 | ✅ Completada | Capa Infrastructure |
-| Fase 5 | ⬜ Pendiente | Capa API |
+| Fase 5 | ✅ Completada | Capa API |
 | Fase 6 | ⬜ Pendiente | Seed de Datos |
 | Fase 7 | ⬜ Pendiente | Testing |
 | Fase 8 | ⬜ Pendiente | Documentación |
@@ -309,3 +309,4 @@
 | 2026-01-02 | Fase 2 | Completada - Capa Domain implementada |
 | 2026-01-02 | Fase 3 | Completada - Capa Application con CQRS y MediatR |
 | 2026-01-02 | Fase 4 | Completada - Capa Infrastructure con MongoDB, JWT, OMDb, Cache |
+| 2026-01-02 | Fase 5 | Completada - Capa API con Minimal APIs, autenticación y Swagger |
