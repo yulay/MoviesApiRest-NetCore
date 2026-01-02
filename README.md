@@ -151,9 +151,31 @@ Al iniciar la aplicación, se crea automáticamente un usuario administrador:
 | GET | `/health/ready` | Verificar BD |
 | GET | `/health/live` | Verificar API |
 
-## Ejemplos de Uso
+## Probar la API
 
-### Login
+### Opción 1: Colección Postman (Recomendado)
+
+La carpeta `Curls/` contiene una colección completa de Postman con todos los endpoints:
+
+```bash
+Curls/
+├── MovieManager_API.postman_collection.json  # Colección Postman
+└── README.md                                  # Instrucciones de uso
+```
+
+**Para usar:**
+1. Abrir Postman
+2. **Import** → seleccionar `MovieManager_API.postman_collection.json`
+3. Ejecutar **"Login - Admin"** primero (el token se guarda automáticamente)
+4. Probar cualquier endpoint
+
+### Opción 2: REST Client (VS Code)
+
+Usar el archivo `src/MovieManager.API/MovieManager.API.http` con la extensión REST Client.
+
+### Opción 3: cURL
+
+#### Login
 
 ```bash
 curl -X POST https://localhost:5001/api/auth/login \
@@ -266,12 +288,17 @@ MovieManager.sln
 │   ├── MovieManager.API/
 │   │   ├── Endpoints/        # Minimal APIs
 │   │   ├── Middleware/       # Exception handling
-│   │   └── HealthChecks/     # MongoDB, OMDb checks
+│   │   ├── HealthChecks/     # MongoDB, OMDb checks
+│   │   └── MovieManager.API.http  # REST Client requests
 │   │
 │   └── MovieManager.Tests/
 │       ├── Application/      # Handler y Validator tests
 │       ├── Infrastructure/   # Service tests
 │       └── Integration/      # API endpoint tests
+│
+├── Curls/
+│   ├── MovieManager_API.postman_collection.json  # Colección Postman
+│   └── README.md             # Instrucciones de uso
 │
 └── docs/
     ├── WorkPlan.md           # Plan de trabajo
