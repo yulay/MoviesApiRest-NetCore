@@ -61,23 +61,23 @@
 **Objetivo:** Definir entidades y contratos del dominio
 
 ### Tareas:
-- [ ] 2.1 Crear entidad Movie
+- [x] 2.1 Crear entidad Movie
   - Id, ExternalId, Title, Description, Year
   - Genres, Director, Actors, Rating, Duration
   - CreatedAt, UpdatedAt, IsDeleted, Metadata
 
-- [ ] 2.2 Crear entidad User
+- [x] 2.2 Crear entidad User
   - Id, Email, PasswordHash, FirstName, LastName
   - Role, CreatedAt, RefreshToken, RefreshTokenExpiry
 
-- [ ] 2.3 Crear Value Objects
-  - MovieId, UserId, Email, Role
+- [x] 2.3 Crear enumeración UserRole
+  - User, Editor, Admin
 
-- [ ] 2.4 Crear interfaces de repositorios
+- [x] 2.4 Crear interfaces de repositorios
   - IMovieRepository
   - IUserRepository
 
-- [ ] 2.5 Crear interfaces de servicios externos
+- [x] 2.5 Crear interfaces de servicios externos
   - IOmdbService
 
 ---
@@ -281,7 +281,7 @@
 | Fase | Estado | Descripción |
 |------|--------|-------------|
 | Fase 1 | ✅ Completada | Configuración Inicial |
-| Fase 2 | ⬜ Pendiente | Capa Domain |
+| Fase 2 | ✅ Completada | Capa Domain |
 | Fase 3 | ⬜ Pendiente | Capa Application |
 | Fase 4 | ⬜ Pendiente | Capa Infrastructure |
 | Fase 5 | ⬜ Pendiente | Capa API |
@@ -306,3 +306,4 @@
 | Fecha | Fase | Acción |
 |-------|------|--------|
 | 2026-01-02 | Fase 1 | Completada - Estructura del proyecto creada |
+| 2026-01-02 | Fase 2 | Completada - Capa Domain implementada |
