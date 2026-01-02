@@ -135,27 +135,27 @@
 **Objetivo:** Implementar acceso a datos y servicios externos
 
 ### Tareas:
-- [ ] 4.1 Configurar MongoDB
+- [x] 4.1 Configurar MongoDB
   - MongoDbContext
   - Configuración de conexión
   - Índices para búsquedas rápidas
 
-- [ ] 4.2 Implementar repositorios
+- [x] 4.2 Implementar repositorios
   - MovieRepository (con filtro IsDeleted)
   - UserRepository
 
-- [ ] 4.3 Implementar servicio OMDb
+- [x] 4.3 Implementar servicio OMDb
   - OmdbService (llamadas HTTP a la API)
   - Mapeo de respuestas OMDb a entidades
 
-- [ ] 4.4 Implementar servicio de autenticación
+- [x] 4.4 Implementar servicio de autenticación
   - JwtService (generación y validación de tokens)
   - PasswordHasher
 
-- [ ] 4.5 Configurar cache
+- [x] 4.5 Configurar cache
   - CacheService con IMemoryCache
 
-- [ ] 4.6 Registrar servicios en DI
+- [x] 4.6 Registrar servicios en DI
   - InfrastructureServiceExtensions
 
 ---
@@ -283,7 +283,7 @@
 | Fase 1 | ✅ Completada | Configuración Inicial |
 | Fase 2 | ✅ Completada | Capa Domain |
 | Fase 3 | ✅ Completada | Capa Application |
-| Fase 4 | ⬜ Pendiente | Capa Infrastructure |
+| Fase 4 | ✅ Completada | Capa Infrastructure |
 | Fase 5 | ⬜ Pendiente | Capa API |
 | Fase 6 | ⬜ Pendiente | Seed de Datos |
 | Fase 7 | ⬜ Pendiente | Testing |
@@ -308,3 +308,4 @@
 | 2026-01-02 | Fase 1 | Completada - Estructura del proyecto creada |
 | 2026-01-02 | Fase 2 | Completada - Capa Domain implementada |
 | 2026-01-02 | Fase 3 | Completada - Capa Application con CQRS y MediatR |
+| 2026-01-02 | Fase 4 | Completada - Capa Infrastructure con MongoDB, JWT, OMDb, Cache |
