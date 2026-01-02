@@ -42,29 +42,45 @@ git clone https://github.com/tu-usuario/MoviesApiRest-NetCore.git
 cd MoviesApiRest-NetCore
 ```
 
-### 2. Configurar appsettings.json
+### 2. Configurar credenciales
 
-Editar `src/MovieManager.API/appsettings.json`:
+Las credenciales sensibles NO se incluyen en el repositorio. Tienes dos opciones:
 
-```json
-{
-  "MongoDb": {
-    "ConnectionString": "mongodb+srv://usuario:password@cluster.mongodb.net",
-    "DatabaseName": "MoviesDb"
-  },
-  "Jwt": {
-    "SecretKey": "TuClaveSecretaMuyLargaYSeguraDeAlMenos32Caracteres!",
-    "Issuer": "MovieManagerAPI",
-    "Audience": "MovieManagerClients",
-    "ExpirationMinutes": 60,
-    "RefreshTokenExpirationDays": 7
-  },
-  "Omdb": {
-    "BaseUrl": "http://www.omdbapi.com/",
-    "ApiKey": "tu-api-key"
-  }
-}
+#### Opción A: User Secrets (Recomendado para desarrollo)
+
+```bash
+cd src/MovieManager.API
+
+# Configurar MongoDB
+dotnet user-secrets set "MongoDb:ConnectionString" "mongodb+srv://usuario:password@cluster.mongodb.net/MoviesDb?retryWrites=true&w=majority"
+
+# Configurar JWT
+dotnet user-secrets set "Jwt:SecretKey" "TuClaveSecretaMuyLargaYSeguraDeAlMenos32Caracteres!"
+
+# Configurar OMDb
+dotnet user-secrets set "Omdb:ApiKey" "tu-api-key-de-omdb"
+
+# Verificar configuración
+dotnet user-secrets list
 ```
+
+#### Opción B: Variables de entorno (Producción/Docker)
+
+```bash
+# Linux/macOS
+export MongoDb__ConnectionString="mongodb+srv://..."
+export Jwt__SecretKey="tu-clave-secreta"
+export Omdb__ApiKey="tu-api-key"
+
+# Windows PowerShell
+$env:MongoDb__ConnectionString="mongodb+srv://..."
+$env:Jwt__SecretKey="tu-clave-secreta"
+$env:Omdb__ApiKey="tu-api-key"
+```
+
+#### Archivo de ejemplo
+
+Consulta `src/MovieManager.API/appsettings.Example.json` para ver la estructura completa de configuración.
 
 ### 3. Restaurar dependencias y ejecutar
 
