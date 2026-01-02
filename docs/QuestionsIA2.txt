@@ -1,0 +1,95 @@
+Respuestas y Nuevas Preguntas - MoviesApiRest-NetCore
+=====================================================
+
+RESPUESTAS A TUS CONSULTAS
+==========================
+
+Pregunta 2 - MongoDB sin instalación local
+------------------------------------------
+RECOMENDACION: Usar MongoDB Atlas (versión cloud gratuita)
+
+MongoDB Atlas ofrece un tier gratuito (M0 Sandbox) que incluye:
+- 512 MB de almacenamiento (suficiente para desarrollo y pruebas)
+- Sin costo
+- No requiere instalación local
+- Accesible desde cualquier lugar
+- Backups automáticos
+
+PASOS A SEGUIR:
+1. Ir a https://www.mongodb.com/cloud/atlas/register
+2. Crear una cuenta gratuita (puedes usar Google o email)
+3. Crear un nuevo proyecto (ej: "MoviesApiRest")
+4. Crear un cluster gratuito (M0 Sandbox):
+   - Seleccionar "FREE" tier
+   - Elegir el proveedor cloud más cercano (AWS, Google Cloud o Azure)
+   - Elegir la región más cercana a tu ubicación
+5. Configurar acceso:
+   - En "Database Access": crear un usuario con password
+   - En "Network Access": agregar tu IP (o 0.0.0.0/0 para permitir todas durante desarrollo)
+6. Obtener el connection string:
+   - Click en "Connect" > "Connect your application"
+   - Copiar el connection string (formato: mongodb+srv://usuario:password@cluster.xxxxx.mongodb.net/MoviesDb)
+7. Compartirme el connection string para configurarlo en el proyecto
+
+Por acá te comparto la cadena de conexión
+mongodb+srv://yulayracingteam_db_user:Vf57IqiCWklyScq5@cluster0.uuthaye.mongodb.net/
+
+Pregunta 7 - Cache: IMemoryCache vs Redis
+-----------------------------------------
+RECOMENDACION: Usar IMemoryCache
+
+Razones:
+1. SIMPLICIDAD: No requiere infraestructura adicional, viene integrado en .NET
+2. COSTO: Gratuito, sin servicios externos
+3. RENDIMIENTO: Para una sola instancia de la aplicación es muy rápido
+4. ESCALA DEL PROYECTO: Para un catálogo de películas con uso moderado es más que suficiente
+5. DESARROLLO: Más fácil de configurar y debuggear
+
+¿Cuándo usaría Redis en su lugar?
+- Si tuvieras múltiples instancias de la API (load balancing)
+- Si necesitaras cache persistente entre reinicios
+- Si el volumen de datos cacheados fuera muy grande
+
+Para este proyecto, IMemoryCache es la opción correcta.
+
+Ok, entonces utiliza IMemoryCache
+
+NUEVAS PREGUNTAS
+================
+
+Autenticación JWT
+-----------------
+1. ¿Necesitas un sistema completo de registro de usuarios o prefieres empezar con usuarios predefinidos (seed) para desarrollo?
+   - Opción A: Sistema completo con endpoints de Register/Login
+   - Opción B: Usuarios predefinidos en la base de datos (más simple para empezar)
+
+Prefiero la Opción A: Sistema completo con endpoints de Register/Login
+
+2. ¿Qué roles de usuario necesitas?
+   - Opción A: Solo un rol "Admin" que puede hacer todo
+   - Opción B: Múltiples roles (Admin, User) con diferentes permisos
+     * Admin: CRUD completo + estadísticas + importación
+     * User: Solo lectura (consultar películas)
+
+Prefiero la opción B: Múltiples roles (Admin, User) con diferentes permisos
+     * Admin: CRUD completo + estadísticas + importación
+     * User: Solo lectura (consultar películas)
+     * Editor: Solo edición (editar los datos de las películas ya registradas)
+
+3. ¿Necesitas endpoint de "refresh token" para renovar sesiones sin volver a hacer login?
+
+Si lo necesito por favor
+
+Datos Iniciales
+---------------
+4. ¿Quieres que al iniciar la aplicación se importen automáticamente algunas películas de ejemplo desde OMDb para tener datos de prueba?
+
+Si me parece excelente esta opción
+
+Idioma
+------
+5. ¿Prefieres que los nombres de endpoints, propiedades y mensajes estén en español o en inglés?
+   - Ejemplo español: /api/peliculas, Titulo, Descripcion
+   - Ejemplo inglés: /api/movies, Title, Description
+
+Las prefiero en inglés, pero todo lo que tiene que ver con documentación y comentarios en español

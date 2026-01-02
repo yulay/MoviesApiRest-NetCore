@@ -1,0 +1,44 @@
+Preguntas sobre el Proyecto MoviesApiRest-NetCore
+=================================================
+
+API Externa
+-----------
+1. ¿Cuál API externa prefieres usar: OMDb o TMDb? ¿Ya tienes una API key o necesitas obtener una?
+
+Usar OMDb con este API key b279cce3
+Please append it to all of your API requests,
+OMDb API: http://www.omdbapi.com/?i=tt3896198&apikey=b279cce3
+
+Base de Datos
+-------------
+2. ¿Tienes MongoDB instalado localmente o prefieres usar MongoDB Atlas (cloud)?
+No tengo MongoDB instalado localmente en mi computadora y no quiero instalar nada, qué me recomiendas y dame las pautas que debo seguir para poder apoyarte con esto?
+3. ¿Cuál es el connection string que debo usar o lo configuro con valores por defecto para desarrollo?
+Configuralo con los valores que tu consideres adecuados para el proyecto
+Arquitectura
+------------
+4. Para la capa de Presentation: ¿prefieres Minimal APIs o Controllers tradicionales?
+Prefiero Minimal APIs
+5. ¿Es necesario implementar algún tipo de autenticación/autorización (JWT, API Keys, etc.) o la API será pública?
+Si es necesario utilizar, me gustaria que uses JWT ya que no quiero que la la API sea pública
+
+Implementación Técnica
+----------------------
+6. Para el soft delete, ¿prefieres un campo IsDeleted: bool o DeletedAt: DateTime?
+prefiero un campo IsDeleted: bool, recuerda que solamente las películas que no han sido borradas son las que deben ser devueltas por el API
+7. Para el cache: ¿usar IMemoryCache (en memoria) o prefieres Redis?
+Para este proyecto en concreto qué me recomendas vos y porqué?
+8. ¿Tienes algún límite específico para el Rate Limiting (ej: 100 requests/minuto)?
+me parece bien ese valor de 100 request/minuto
+
+Testing y Logging
+-----------------
+9. ¿Framework de testing preferido? ¿xUnit, NUnit o MSTest?
+Puedes usar xUnit, asegurate que todas las pruebas pasen y no den errores de compilación ni de ejecución
+10. Para los logs con Serilog: ¿dónde prefieres almacenarlos? (consola, archivos, o algún servicio como Seq)
+Quiero almacenarlos en dos lugares: en consola y en archivos con extensión .log organizame adecuadamente esos archivos de log para que no sea complicado su revisión
+
+Prioridades
+-----------
+11. ¿Quieres que implemente todo desde el inicio o prefieres empezar con un MVP (funcionalidad básica CRUD) y luego agregar las características adicionales?
+Quiero que me hagas un plan de trabajo completo con el desgloce de las tareas que se deben ir realizado para alcanzar el desarrollo final completo terminado, esto lo haremos partes por partes con el objetivo de ir registrando los avances según el plan de trabajo que me indiques
