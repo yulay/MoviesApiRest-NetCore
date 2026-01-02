@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using MovieManager.Domain.Entities;
@@ -23,6 +24,22 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            config.AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                ["Jwt:SecretKey"] = "TestSecretKeyForIntegrationTestsMinimum32Characters!",
+                ["Jwt:Issuer"] = "MovieManagerAPI",
+                ["Jwt:Audience"] = "MovieManagerClients",
+                ["Jwt:ExpirationMinutes"] = "60",
+                ["Jwt:RefreshTokenExpirationDays"] = "7",
+                ["MongoDb:ConnectionString"] = "mongodb://localhost:27017",
+                ["MongoDb:DatabaseName"] = "MoviesDbTest",
+                ["Omdb:BaseUrl"] = "http://www.omdbapi.com/",
+                ["Omdb:ApiKey"] = "test-api-key"
+            });
+        });
+
         builder.ConfigureServices(services =>
         {
             var descriptorsToRemove = services

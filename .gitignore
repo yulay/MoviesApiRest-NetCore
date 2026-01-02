@@ -353,3 +353,29 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/visualstudio
+
+# ============================================
+# Credentials and Secrets - IMPORTANT!
+# ============================================
+
+# Environment-specific settings with secrets
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.Production.json
+
+# Secret files
+**/secrets.json
+**/*.secrets.json
+**/usersecrets.json
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Application logs (may contain sensitive info)
+logs/
+*.log
+
+# Rider IDE
+.idea/
