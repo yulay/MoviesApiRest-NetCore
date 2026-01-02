@@ -1,4 +1,5 @@
 using MediatR;
+using MovieManager.Application.DTOs.Statistics;
 using MovieManager.Application.Features.Statistics.Queries;
 
 namespace MovieManager.API.Endpoints;
@@ -18,7 +19,11 @@ public static class StatisticsEndpoints
             return Results.Ok(new { TotalMovies = result });
         })
         .WithName("GetTotalMovies")
-        .WithDescription("Obtener el total de películas");
+        .WithSummary("Total de películas")
+        .WithDescription("Retorna el número total de películas activas en la base de datos. **Solo Admin**.")
+        .Produces(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
 
         group.MapGet("/genres", async (IMediator mediator) =>
         {
@@ -27,7 +32,11 @@ public static class StatisticsEndpoints
             return Results.Ok(result);
         })
         .WithName("GetGenreStats")
-        .WithDescription("Obtener estadísticas por género");
+        .WithSummary("Estadísticas por género")
+        .WithDescription("Retorna la cantidad de películas por cada género. **Solo Admin**.")
+        .Produces<List<GenreStatDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
 
         group.MapGet("/years-distribution", async (IMediator mediator) =>
         {
@@ -36,7 +45,11 @@ public static class StatisticsEndpoints
             return Results.Ok(result);
         })
         .WithName("GetYearStats")
-        .WithDescription("Obtener distribución de películas por año");
+        .WithSummary("Distribución por año")
+        .WithDescription("Retorna la cantidad de películas por año de lanzamiento. **Solo Admin**.")
+        .Produces<List<YearStatDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
 
         group.MapGet("/top-directors", async (int count, IMediator mediator) =>
         {
@@ -45,6 +58,15 @@ public static class StatisticsEndpoints
             return Results.Ok(result);
         })
         .WithName("GetTopDirectors")
-        .WithDescription("Obtener los directores con más películas");
+        .WithSummary("Directores destacados")
+        .WithDescription("Retorna los directores con mayor cantidad de películas en la colección. **Solo Admin**.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Cantidad de directores a retornar (default: 10)";
+            return operation;
+        })
+        .Produces<List<DirectorStatDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden);
     }
 }
