@@ -1,6 +1,235 @@
-@MovieManager.API_HostAddress = http://localhost:5068
+###############################################################################
+# Movie Manager API - HTTP Client File
+# Usar con REST Client extension en VS Code o Visual Studio
+###############################################################################
 
-GET {{MovieManager.API_HostAddress}}/weatherforecast/
-Accept: application/json
+@baseUrl = https://localhost:5001
+@contentType = application/json
+
+# Token de acceso (actualizar después de login)
+@accessToken = {{login.response.body.data.accessToken}}
+
+
+###############################################################################
+# HEALTH CHECKS
+###############################################################################
+
+### Health Check - Estado completo
+GET {{baseUrl}}/health
+Accept: {{contentType}}
+
+###
+
+### Health Check - Liveness (API activa)
+GET {{baseUrl}}/health/live
+Accept: {{contentType}}
+
+###
+
+### Health Check - Readiness (BD lista)
+GET {{baseUrl}}/health/ready
+Accept: {{contentType}}
+
+###
+
+
+###############################################################################
+# AUTENTICACION
+###############################################################################
+
+### Registrar nuevo usuario
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+    "email": "nuevo@example.com",
+    "password": "Password123!",
+    "firstName": "Nuevo",
+    "lastName": "Usuario"
+}
+
+###
+
+### Login - Usuario Admin (guarda el token automáticamente)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+    "email": "admin@moviemanager.com",
+    "password": "Admin123!"
+}
+
+###
+
+### Refresh Token
+POST {{baseUrl}}/api/auth/refresh-token
+Content-Type: {{contentType}}
+
+{
+    "accessToken": "{{accessToken}}",
+    "refreshToken": "tu-refresh-token-aqui"
+}
+
+###
+
+
+###############################################################################
+# PELICULAS - CRUD
+###############################################################################
+
+### Obtener todas las películas (paginado)
+GET {{baseUrl}}/api/movies?page=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Obtener película por ID
+GET {{baseUrl}}/api/movies/507f1f77bcf86cd799439011
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Crear película (Solo Admin)
+POST {{baseUrl}}/api/movies
+Authorization: Bearer {{accessToken}}
+Content-Type: {{contentType}}
+
+{
+    "title": "The Matrix",
+    "description": "A computer hacker learns about the true nature of reality and his role in the war against its controllers.",
+    "year": 1999,
+    "genres": ["Action", "Sci-Fi"],
+    "actors": ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"],
+    "director": "Lana Wachowski",
+    "rating": 8.7,
+    "duration": 136,
+    "posterUrl": "https://example.com/matrix-poster.jpg"
+}
+
+###
+
+### Actualizar película (Editor+)
+PUT {{baseUrl}}/api/movies/507f1f77bcf86cd799439011
+Authorization: Bearer {{accessToken}}
+Content-Type: {{contentType}}
+
+{
+    "title": "The Matrix (Updated)",
+    "description": "Updated description",
+    "year": 1999,
+    "genres": ["Action", "Sci-Fi", "Thriller"],
+    "actors": ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss", "Hugo Weaving"],
+    "director": "Lana Wachowski",
+    "rating": 8.7,
+    "duration": 136
+}
+
+###
+
+### Eliminar película - Soft Delete (Solo Admin)
+DELETE {{baseUrl}}/api/movies/507f1f77bcf86cd799439011
+Authorization: Bearer {{accessToken}}
+
+###
+
+
+###############################################################################
+# PELICULAS - BUSQUEDA Y FILTROS
+###############################################################################
+
+### Buscar por título
+GET {{baseUrl}}/api/movies/search?title=Matrix&page=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Filtrar por género
+GET {{baseUrl}}/api/movies/genre/Action?page=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Filtrar por director
+GET {{baseUrl}}/api/movies/director/Christopher Nolan?page=1&pageSize=10
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Película aleatoria
+GET {{baseUrl}}/api/movies/random
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Recomendaciones por género
+GET {{baseUrl}}/api/movies/recommendations/Sci-Fi?count=5
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+
+###############################################################################
+# ESTADISTICAS (Solo Admin)
+###############################################################################
+
+### Total de películas
+GET {{baseUrl}}/api/statistics/total-movies
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Películas por género
+GET {{baseUrl}}/api/statistics/genres
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Distribución por año
+GET {{baseUrl}}/api/statistics/years-distribution
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Top directores
+GET {{baseUrl}}/api/statistics/top-directors?count=10
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+
+###############################################################################
+# INTEGRACION OMDb (Solo Admin)
+###############################################################################
+
+### Buscar película en OMDb
+GET {{baseUrl}}/api/integration/search-external?title=Inception&year=2010
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Importar película desde OMDb por IMDb ID
+POST {{baseUrl}}/api/integration/import/tt1375666
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
+
+###
+
+### Sincronizar película con OMDb
+PUT {{baseUrl}}/api/integration/sync/507f1f77bcf86cd799439011
+Authorization: Bearer {{accessToken}}
+Accept: {{contentType}}
 
 ###
