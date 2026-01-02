@@ -1,0 +1,648 @@
+{
+	"info": {
+		"_postman_id": "movie-manager-api-collection",
+		"name": "Movie Manager API",
+		"description": "Colección completa de endpoints para Movie Manager API REST.\n\n## Configuración inicial\n1. Ejecutar el request \"Login - Admin\" primero\n2. El token se guarda automáticamente en la variable `accessToken`\n3. Todos los demás requests usan este token\n\n## Roles\n- **Admin**: Acceso completo\n- **Editor**: CRUD de películas (excepto delete)\n- **User**: Solo lectura de películas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://localhost:5001",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Health Checks",
+			"item": [
+				{
+					"name": "Health - Estado Completo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["health"]
+						},
+						"description": "Verifica el estado completo de la API, incluyendo MongoDB y OMDb."
+					}
+				},
+				{
+					"name": "Health - Liveness",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/live",
+							"host": ["{{baseUrl}}"],
+							"path": ["health", "live"]
+						},
+						"description": "Verifica si la API está activa (liveness probe para Kubernetes)."
+					}
+				},
+				{
+					"name": "Health - Readiness",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health/ready",
+							"host": ["{{baseUrl}}"],
+							"path": ["health", "ready"]
+						},
+						"description": "Verifica si la API está lista para recibir tráfico (readiness probe)."
+					}
+				}
+			],
+			"description": "Endpoints para verificar el estado de salud de la API."
+		},
+		{
+			"name": "Autenticación",
+			"item": [
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"nuevo@example.com\",\n    \"password\": \"Password123!\",\n    \"firstName\": \"Nuevo\",\n    \"lastName\": \"Usuario\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "register"]
+						},
+						"description": "Registra un nuevo usuario con rol 'User' por defecto."
+					}
+				},
+				{
+					"name": "Login - Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data) {",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.data.accessToken);",
+									"    pm.collectionVariables.set(\"refreshToken\", jsonData.data.refreshToken);",
+									"    console.log(\"Token guardado correctamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@moviemanager.com\",\n    \"password\": \"Admin123!\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "login"]
+						},
+						"description": "Inicia sesión con el usuario administrador. El token se guarda automáticamente."
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.success && jsonData.data) {",
+									"    pm.collectionVariables.set(\"accessToken\", jsonData.data.accessToken);",
+									"    pm.collectionVariables.set(\"refreshToken\", jsonData.data.refreshToken);",
+									"    console.log(\"Token renovado correctamente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"accessToken\": \"{{accessToken}}\",\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh-token",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "auth", "refresh-token"]
+						},
+						"description": "Renueva el token de acceso usando el refresh token."
+					}
+				}
+			],
+			"description": "Endpoints de autenticación (registro, login, refresh token)."
+		},
+		{
+			"name": "Películas - CRUD",
+			"item": [
+				{
+					"name": "Listar Películas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Obtiene lista paginada de películas. Requiere rol User o superior."
+					}
+				},
+				{
+					"name": "Obtener Película por ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "507f1f77bcf86cd799439011",
+									"description": "ID de la película"
+								}
+							]
+						},
+						"description": "Obtiene una película por su ID. Requiere rol User o superior."
+					}
+				},
+				{
+					"name": "Crear Película",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Matrix\",\n    \"description\": \"A computer hacker learns about the true nature of reality and his role in the war against its controllers.\",\n    \"year\": 1999,\n    \"genres\": [\"Action\", \"Sci-Fi\"],\n    \"actors\": [\"Keanu Reeves\", \"Laurence Fishburne\", \"Carrie-Anne Moss\"],\n    \"director\": \"Lana Wachowski\",\n    \"rating\": 8.7,\n    \"duration\": 136,\n    \"posterUrl\": \"https://example.com/matrix-poster.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/movies",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies"]
+						},
+						"description": "Crea una nueva película. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Actualizar Película",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"The Matrix (Remastered)\",\n    \"description\": \"A computer hacker learns about the true nature of reality.\",\n    \"year\": 1999,\n    \"genres\": [\"Action\", \"Sci-Fi\", \"Thriller\"],\n    \"actors\": [\"Keanu Reeves\", \"Laurence Fishburne\", \"Carrie-Anne Moss\", \"Hugo Weaving\"],\n    \"director\": \"Lana Wachowski\",\n    \"rating\": 8.7,\n    \"duration\": 136\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "507f1f77bcf86cd799439011",
+									"description": "ID de la película"
+								}
+							]
+						},
+						"description": "Actualiza una película existente. Requiere rol Editor o superior."
+					}
+				},
+				{
+					"name": "Eliminar Película (Soft Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "507f1f77bcf86cd799439011",
+									"description": "ID de la película"
+								}
+							]
+						},
+						"description": "Elimina una película (soft delete). Requiere rol Admin."
+					}
+				}
+			],
+			"description": "Operaciones CRUD básicas para películas."
+		},
+		{
+			"name": "Películas - Búsqueda y Filtros",
+			"item": [
+				{
+					"name": "Buscar por Título",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/search?title=Matrix&page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "search"],
+							"query": [
+								{
+									"key": "title",
+									"value": "Matrix"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Busca películas por título (búsqueda parcial)."
+					}
+				},
+				{
+					"name": "Filtrar por Género",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/genre/:genre?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "genre", ":genre"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							],
+							"variable": [
+								{
+									"key": "genre",
+									"value": "Action",
+									"description": "Género a filtrar"
+								}
+							]
+						},
+						"description": "Filtra películas por género."
+					}
+				},
+				{
+					"name": "Filtrar por Director",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/director/:director?page=1&pageSize=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "director", ":director"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								}
+							],
+							"variable": [
+								{
+									"key": "director",
+									"value": "Christopher Nolan",
+									"description": "Nombre del director"
+								}
+							]
+						},
+						"description": "Filtra películas por director."
+					}
+				},
+				{
+					"name": "Película Aleatoria",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/random",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "random"]
+						},
+						"description": "Obtiene una película aleatoria de la colección."
+					}
+				},
+				{
+					"name": "Recomendaciones por Género",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/movies/recommendations/:genre?count=5",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "movies", "recommendations", ":genre"],
+							"query": [
+								{
+									"key": "count",
+									"value": "5",
+									"description": "Cantidad de recomendaciones"
+								}
+							],
+							"variable": [
+								{
+									"key": "genre",
+									"value": "Sci-Fi",
+									"description": "Género para recomendaciones"
+								}
+							]
+						},
+						"description": "Obtiene recomendaciones de películas basadas en un género."
+					}
+				}
+			],
+			"description": "Endpoints de búsqueda y filtrado de películas."
+		},
+		{
+			"name": "Estadísticas",
+			"item": [
+				{
+					"name": "Total de Películas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/total-movies",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "statistics", "total-movies"]
+						},
+						"description": "Obtiene el total de películas en la colección. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Películas por Género",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/genres",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "statistics", "genres"]
+						},
+						"description": "Obtiene estadísticas de películas agrupadas por género. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Distribución por Año",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/years-distribution",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "statistics", "years-distribution"]
+						},
+						"description": "Obtiene la distribución de películas por año. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Top Directores",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/statistics/top-directors?count=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "statistics", "top-directors"],
+							"query": [
+								{
+									"key": "count",
+									"value": "10",
+									"description": "Cantidad de directores a mostrar"
+								}
+							]
+						},
+						"description": "Obtiene los directores con más películas. Requiere rol Admin."
+					}
+				}
+			],
+			"description": "Endpoints de estadísticas (solo Admin)."
+		},
+		{
+			"name": "Integración OMDb",
+			"item": [
+				{
+					"name": "Buscar en OMDb",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/integration/search-external?title=Inception&year=2010",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "integration", "search-external"],
+							"query": [
+								{
+									"key": "title",
+									"value": "Inception",
+									"description": "Título de la película"
+								},
+								{
+									"key": "year",
+									"value": "2010",
+									"description": "Año (opcional)"
+								}
+							]
+						},
+						"description": "Busca películas en la API externa de OMDb. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Importar desde OMDb",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/integration/import/:imdbId",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "integration", "import", ":imdbId"],
+							"variable": [
+								{
+									"key": "imdbId",
+									"value": "tt1375666",
+									"description": "IMDb ID (ej: tt1375666 para Inception)"
+								}
+							]
+						},
+						"description": "Importa una película desde OMDb usando su IMDb ID. Requiere rol Admin."
+					}
+				},
+				{
+					"name": "Sincronizar con OMDb",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/integration/sync/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "integration", "sync", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "507f1f77bcf86cd799439011",
+									"description": "ID de la película local"
+								}
+							]
+						},
+						"description": "Sincroniza una película existente con datos actualizados de OMDb. Requiere rol Admin."
+					}
+				}
+			],
+			"description": "Endpoints de integración con OMDb API (solo Admin)."
+		}
+	]
+}
