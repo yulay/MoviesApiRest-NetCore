@@ -7,6 +7,7 @@ using MovieManager.API.Endpoints;
 using MovieManager.API.Middleware;
 using MovieManager.Application;
 using MovieManager.Infrastructure;
+using MovieManager.Infrastructure.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -132,6 +133,12 @@ app.MapAuthEndpoints();
 app.MapMovieEndpoints();
 app.MapStatisticsEndpoints();
 app.MapIntegrationEndpoints();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<IDataSeederService>();
+    await seeder.SeedAsync();
+}
 
 app.Run();
 

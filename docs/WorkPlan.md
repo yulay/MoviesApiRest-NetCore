@@ -214,14 +214,14 @@
 **Objetivo:** Cargar películas de ejemplo al iniciar
 
 ### Tareas:
-- [ ] 6.1 Crear servicio de seeding
+- [x] 6.1 Crear servicio de seeding
   - DataSeederService
 
-- [ ] 6.2 Implementar importación inicial
+- [x] 6.2 Implementar importación inicial
   - Lista de películas populares a importar desde OMDb
   - Ejecutar al iniciar si la BD está vacía
 
-- [ ] 6.3 Crear usuario Admin por defecto
+- [x] 6.3 Crear usuario Admin por defecto
   - admin@moviemanager.com / Admin123!
 
 ---
@@ -285,7 +285,7 @@
 | Fase 3 | ✅ Completada | Capa Application |
 | Fase 4 | ✅ Completada | Capa Infrastructure |
 | Fase 5 | ✅ Completada | Capa API |
-| Fase 6 | ⬜ Pendiente | Seed de Datos |
+| Fase 6 | ✅ Completada | Seed de Datos |
 | Fase 7 | ⬜ Pendiente | Testing |
 | Fase 8 | ⬜ Pendiente | Documentación |
 
@@ -310,3 +310,4 @@
 | 2026-01-02 | Fase 3 | Completada - Capa Application con CQRS y MediatR |
 | 2026-01-02 | Fase 4 | Completada - Capa Infrastructure con MongoDB, JWT, OMDb, Cache |
 | 2026-01-02 | Fase 5 | Completada - Capa API con Minimal APIs, autenticación y Swagger |
+| 2026-01-02 | Fase 6 | Completada - Seeding con usuario Admin y 15 películas de OMDb |

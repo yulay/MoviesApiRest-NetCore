@@ -31,6 +31,8 @@ public static class DependencyInjection
         services.AddMemoryCache();
         services.AddSingleton<ICacheService, CacheService>();
 
+        services.AddScoped<IDataSeederService, DataSeederService>();
+
         return services;
     }
 }
