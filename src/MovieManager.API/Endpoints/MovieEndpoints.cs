@@ -1,4 +1,5 @@
 using MediatR;
+using MovieManager.Application.DTOs.Common;
 using MovieManager.Application.DTOs.Movies;
 using MovieManager.Application.Features.Movies.Commands;
 using MovieManager.Application.Features.Movies.Queries;
@@ -20,20 +21,38 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("GetMovies")
-        .WithDescription("Obtener lista paginada de películas");
+        .WithSummary("Obtener películas paginadas")
+        .WithDescription("Retorna una lista paginada de todas las películas activas. Requiere autenticación.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Número de página (default: 1)";
+            operation.Parameters[1].Description = "Cantidad de elementos por página (default: 10, max: 50)";
+            return operation;
+        })
+        .Produces<PaginatedResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/{id}", async (string id, IMediator mediator) =>
         {
             var query = new GetMovieByIdQuery(id);
             var result = await mediator.Send(query);
 
-            if (result == null)
-                return Results.NotFound(new { Message = "Película no encontrada" });
+            if (!result.Success)
+                return Results.NotFound(result);
 
             return Results.Ok(result);
         })
         .WithName("GetMovieById")
-        .WithDescription("Obtener una película por su ID");
+        .WithSummary("Obtener película por ID")
+        .WithDescription("Retorna los detalles completos de una película específica.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "ID único de la película (MongoDB ObjectId)";
+            return operation;
+        })
+        .Produces<ResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapPost("/", async (MovieCreateDto request, IMediator mediator) =>
         {
@@ -46,7 +65,12 @@ public static class MovieEndpoints
             return Results.Created($"/api/movies/{result.Data?.Id}", result);
         })
         .WithName("CreateMovie")
-        .WithDescription("Crear una nueva película")
+        .WithSummary("Crear nueva película")
+        .WithDescription("Crea una nueva película en la base de datos. **Solo Admin**.")
+        .Produces<ResultDto<MovieDto>>(StatusCodes.Status201Created)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
         .RequireAuthorization("AdminOnly");
 
         group.MapPut("/{id}", async (string id, MovieUpdateDto request, IMediator mediator) =>
@@ -60,7 +84,17 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("UpdateMovie")
-        .WithDescription("Actualizar una película existente")
+        .WithSummary("Actualizar película")
+        .WithDescription("Actualiza los datos de una película existente. **Editor o Admin**.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "ID único de la película a actualizar";
+            return operation;
+        })
+        .Produces<ResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status400BadRequest)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
         .RequireAuthorization("EditorOrAdmin");
 
         group.MapDelete("/{id}", async (string id, IMediator mediator) =>
@@ -74,7 +108,17 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("DeleteMovie")
-        .WithDescription("Eliminar una película (soft delete)")
+        .WithSummary("Eliminar película")
+        .WithDescription("Realiza un soft delete de la película (marca IsDeleted=true). **Solo Admin**.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "ID único de la película a eliminar";
+            return operation;
+        })
+        .Produces<ResultDto<bool>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status401Unauthorized)
+        .Produces(StatusCodes.Status403Forbidden)
         .RequireAuthorization("AdminOnly");
 
         group.MapGet("/search", async (string title, int page, int pageSize, IMediator mediator) =>
@@ -84,7 +128,17 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("SearchMovies")
-        .WithDescription("Buscar películas por título");
+        .WithSummary("Buscar películas por título")
+        .WithDescription("Busca películas cuyo título contenga el texto especificado (case-insensitive).")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Texto a buscar en el título";
+            operation.Parameters[1].Description = "Número de página (default: 1)";
+            operation.Parameters[2].Description = "Cantidad por página (default: 10)";
+            return operation;
+        })
+        .Produces<PaginatedResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/genre/{genre}", async (string genre, int page, int pageSize, IMediator mediator) =>
         {
@@ -93,7 +147,15 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("GetMoviesByGenre")
-        .WithDescription("Obtener películas por género");
+        .WithSummary("Filtrar por género")
+        .WithDescription("Obtiene películas que pertenecen al género especificado.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Género a filtrar (ej: Action, Drama, Comedy)";
+            return operation;
+        })
+        .Produces<PaginatedResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/director/{director}", async (string director, int page, int pageSize, IMediator mediator) =>
         {
@@ -102,20 +164,32 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("GetMoviesByDirector")
-        .WithDescription("Obtener películas por director");
+        .WithSummary("Filtrar por director")
+        .WithDescription("Obtiene películas dirigidas por el director especificado.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Nombre del director";
+            return operation;
+        })
+        .Produces<PaginatedResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/random", async (IMediator mediator) =>
         {
             var query = new GetRandomMovieQuery();
             var result = await mediator.Send(query);
 
-            if (result == null)
-                return Results.NotFound(new { Message = "No hay películas disponibles" });
+            if (!result.Success)
+                return Results.NotFound(result);
 
             return Results.Ok(result);
         })
         .WithName("GetRandomMovie")
-        .WithDescription("Obtener una película aleatoria");
+        .WithSummary("Película aleatoria")
+        .WithDescription("Retorna una película seleccionada aleatoriamente de la colección.")
+        .Produces<ResultDto<MovieDto>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status404NotFound)
+        .Produces(StatusCodes.Status401Unauthorized);
 
         group.MapGet("/recommendations/{genre}", async (string genre, int count, IMediator mediator) =>
         {
@@ -124,6 +198,15 @@ public static class MovieEndpoints
             return Results.Ok(result);
         })
         .WithName("GetRecommendations")
-        .WithDescription("Obtener recomendaciones de películas por género");
+        .WithSummary("Recomendaciones por género")
+        .WithDescription("Obtiene películas recomendadas basadas en el género especificado.")
+        .WithOpenApi(operation =>
+        {
+            operation.Parameters[0].Description = "Género para las recomendaciones";
+            operation.Parameters[1].Description = "Cantidad de recomendaciones (default: 5)";
+            return operation;
+        })
+        .Produces<ResultDto<List<MovieDto>>>(StatusCodes.Status200OK)
+        .Produces(StatusCodes.Status401Unauthorized);
     }
 }

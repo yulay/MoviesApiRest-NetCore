@@ -253,21 +253,21 @@
 **Objetivo:** Documentar y pulir el proyecto
 
 ### Tareas:
-- [ ] 8.1 Configurar Swagger completo
+- [x] 8.1 Configurar Swagger completo
   - Descripciones en español
   - Ejemplos de request/response
   - Agrupación por categorías
 
-- [ ] 8.2 Agregar Health Checks
+- [x] 8.2 Agregar Health Checks
   - MongoDB connection check
   - OMDb API availability check
 
-- [ ] 8.3 Actualizar README.md
+- [x] 8.3 Actualizar README.md
   - Instrucciones de instalación
   - Configuración requerida
   - Ejemplos de uso
 
-- [ ] 8.4 Revisión final
+- [x] 8.4 Revisión final
   - Verificar todos los endpoints
   - Verificar permisos por rol
   - Verificar logs funcionando
@@ -286,7 +286,7 @@
 | Fase 5 | ✅ Completada | Capa API |
 | Fase 6 | ✅ Completada | Seed de Datos |
 | Fase 7 | ✅ Completada | Testing |
-| Fase 8 | ⬜ Pendiente | Documentación |
+| Fase 8 | ✅ Completada | Documentación |
 
 ---
 
@@ -310,4 +310,5 @@
 | 2026-01-02 | Fase 4 | Completada - Capa Infrastructure con MongoDB, JWT, OMDb, Cache |
 | 2026-01-02 | Fase 5 | Completada - Capa API con Minimal APIs, autenticación y Swagger |
 | 2026-01-02 | Fase 6 | Completada - Seeding con usuario Admin y 15 películas de OMDb |
-| 2026-01-02 | Fase 7 | Completada - 51+ tests unitarios e integración |
+| 2026-01-02 | Fase 7 | Completada - 64 tests unitarios e integración |
+| 2026-01-02 | Fase 8 | Completada - Swagger, Health Checks, README actualizado |
