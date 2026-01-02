@@ -86,46 +86,46 @@
 **Objetivo:** Implementar casos de uso con MediatR y CQRS
 
 ### Tareas:
-- [ ] 3.1 Configurar MediatR y dependencias
+- [x] 3.1 Configurar MediatR y dependencias
 
-- [ ] 3.2 Crear DTOs
+- [x] 3.2 Crear DTOs
   - MovieDto, MovieCreateDto, MovieUpdateDto
-  - UserDto, UserRegisterDto, UserLoginDto
+  - UserDto, RegisterDto, LoginDto
   - TokenDto, RefreshTokenDto
-  - PaginatedResultDto, StatisticsDto
+  - PaginatedResultDto, ResultDto, StatisticsDtos
 
-- [ ] 3.3 Crear Commands (escritura)
+- [x] 3.3 Crear Commands (escritura)
   - CreateMovieCommand
   - UpdateMovieCommand
   - DeleteMovieCommand
-  - ImportMovieFromOmdbCommand
-  - RegisterUserCommand
+  - ImportMovieCommand, SyncMovieCommand
+  - RegisterCommand
   - LoginCommand
   - RefreshTokenCommand
 
-- [ ] 3.4 Crear Queries (lectura)
+- [x] 3.4 Crear Queries (lectura)
   - GetMovieByIdQuery
   - GetMoviesQuery (con paginación)
-  - SearchMoviesByTitleQuery
+  - SearchMoviesQuery
   - GetMoviesByGenreQuery
   - GetMoviesByDirectorQuery
   - GetRandomMovieQuery
-  - GetRecommendationsByGenreQuery
+  - GetRecommendationsQuery
   - GetTotalMoviesQuery
-  - GetMoviesByGenreStatsQuery
-  - GetMoviesByYearStatsQuery
+  - GetGenreStatsQuery
+  - GetYearStatsQuery
   - GetTopDirectorsQuery
   - SearchOmdbQuery
 
-- [ ] 3.5 Crear Handlers para Commands y Queries
+- [x] 3.5 Crear Handlers para Commands y Queries
 
-- [ ] 3.6 Crear Validators con FluentValidation
+- [x] 3.6 Crear Validators con FluentValidation
   - MovieCreateValidator
   - MovieUpdateValidator
-  - UserRegisterValidator
-  - UserLoginValidator
+  - RegisterValidator
+  - LoginValidator
 
-- [ ] 3.7 Crear Behaviors de MediatR
+- [x] 3.7 Crear Behaviors de MediatR
   - ValidationBehavior
   - LoggingBehavior
 
@@ -282,7 +282,7 @@
 |------|--------|-------------|
 | Fase 1 | ✅ Completada | Configuración Inicial |
 | Fase 2 | ✅ Completada | Capa Domain |
-| Fase 3 | ⬜ Pendiente | Capa Application |
+| Fase 3 | ✅ Completada | Capa Application |
 | Fase 4 | ⬜ Pendiente | Capa Infrastructure |
 | Fase 5 | ⬜ Pendiente | Capa API |
 | Fase 6 | ⬜ Pendiente | Seed de Datos |
@@ -307,3 +307,4 @@
 |-------|------|--------|
 | 2026-01-02 | Fase 1 | Completada - Estructura del proyecto creada |
 | 2026-01-02 | Fase 2 | Completada - Capa Domain implementada |
+| 2026-01-02 | Fase 3 | Completada - Capa Application con CQRS y MediatR |
